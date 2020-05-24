@@ -15,10 +15,8 @@ export default class CreateNoteScreen extends Component {
   async storeData (note) {
         try {
             this.props.route.params.onChangeNote(note);
-            alert('Saved');
         } catch (error) {
             console.log(error);
-            alert('Note Saved');
         }
         this.props.navigation.goBack();
 

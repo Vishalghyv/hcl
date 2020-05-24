@@ -12,9 +12,10 @@ export default class NoteScreen extends Component {
                 Notes: {}
               };
     this.Item = this.Item.bind(this);
-    this.updateData = this.updateData.bind(this);
     this.retrieveData = this.retrieveData.bind(this);
     this.saveData = this.saveData.bind(this);
+    this.deleteData = this.deleteData.bind(this);
+    this.Create = this.Create.bind(this);
     this.retrieveData();
     console.log("Start");
   }
@@ -39,13 +40,16 @@ export default class NoteScreen extends Component {
     }
   };
 
-  updateData(note) {
-    console.log(note);
+  async deleteData(note) {
     var newNotes = Object.assign({}, this.state.Notes);
-    newNotes[note.id] = note;
+    delete newNotes[note.id];
     this.setState({Notes:newNotes});
-    console.log(this.state.Notes);
-  };
+    await AsyncStorage.setItem(
+            '@Scheduler:note',
+            JSON.stringify(newNotes)
+          );
+  }
+
   Item( item, onPress ) {
       return (
         <TouchableHighlight 
@@ -54,24 +58,56 @@ export default class NoteScreen extends Component {
           <View style={styles.item}>
               <Text style={styles.title}>{item.noteTitle}</Text>
               <Text> {item.noteText} </Text>
+              <Button
+                title="Delete Note"
+                color="#841584"
+                accessibilityLabel="Delete a Note"
+                onPress = {() => this.deleteData(item)}
+              />
           </View>
         </TouchableHighlight>
       );
   };
+
+  Create(length) {
+    if (!length) {    return (
+        <View style={styles.container}>
+          <Text  style={{ fontSize: 10, color:'lightgrey' }}>You Haven't Created any Notes</Text>
+          <Button
+            title="Create Note"
+            color="#841584"
+            accessibilityLabel="Create a New Note"
+          />
+        </View>
+      );  
+    }
+  }
   render(){
+    let button;
+    if (!Object.keys(this.state.Notes).length) {
+        button = <View style={styles.container}>
+          <Text  style={{ fontSize: 10, color:'lightgrey' }}>You Haven't Created any Notes</Text>
+          <Button
+            title="Create Note"
+            color="#841584"
+            accessibilityLabel="Create a New Note"
+          />
+        </View>;
+    } else {      
+      button = null;
+    }
     return (
       <View style={styles.container}>
         <FlatList
           data={Object.values(this.state.Notes)}
-          renderItem={({ item }) => this.Item(item,() => this.props.navigation.navigate('CreateNote'))}
+          renderItem={({ item }) => this.Item(item,() => this.props.navigation.navigate('CreateNote',{onChangeNote:(note) => {console.log("note changed",note);this.saveData(note);},note:{
+          noteTitle:item.noteTitle,
+          noteText:item.noteText,
+          id: item.id,
+        }}))}
           keyExtractor={item => item.id}
         />
-        <Text  style={{ fontSize: 10, color:'lightgrey' }}>You Haven't Created any Notes</Text>
-        <Button
-          title="Create Note"
-          color="#841584"
-          accessibilityLabel="Create a New Note"
-        />
+        {button}
         <TouchableOpacity onPress={ () => this.props.navigation.push('CreateNote',{onChangeNote:(note) => {console.log("note changed",note);this.saveData(note);},note:{
           noteTitle:'',
           noteText:'',
