@@ -4,8 +4,8 @@ import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
 import NoteScreen from '../screens/Note';
+import ReminderScreen from '../screens/Reminder';
 
 const BottomTab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -28,18 +28,17 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <Tab.Screen
-        name="Links"
-        component={LinksScreen}
-        options={{
-          title: 'Links',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
-        }}
-      />
-      <Tab.Screen
         name="Notes"
         component={NoteScreen}
         options={{
           title: 'Notes',
+        }}
+      />
+      <Tab.Screen
+        name="Reminder"
+        component={ReminderScreen}
+        options={{
+          title: 'Reminder',
         }}
       />
     </Tab.Navigator>
@@ -52,9 +51,9 @@ function getHeaderTitle(route) {
   switch (routeName) {
     case 'Home':
       return 'Home';
-    case 'Links':
-      return 'Links';
     case 'Notes':
       return 'Notes';
+    case 'Reminder':
+      return 'Reminder';
   }
 }

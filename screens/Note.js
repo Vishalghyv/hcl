@@ -17,7 +17,7 @@ export default class NoteScreen extends Component {
     this.deleteData = this.deleteData.bind(this);
     this.Create = this.Create.bind(this);
     this.retrieveData();
-    console.log("Start");
+    console.log("Notes");
   }
   async saveData(note) {;
     let newNotes = Object.assign( {},this.state.Notes);
@@ -99,7 +99,8 @@ export default class NoteScreen extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={Object.values(this.state.Notes)}
+          data={Object.values(this.state.Notes).reverse()}
+          initialScrollIndex = {0}
           renderItem={({ item }) => this.Item(item,() => this.props.navigation.navigate('CreateNote',{onChangeNote:(note) => {console.log("note changed",note);this.saveData(note);},note:{
           noteTitle:item.noteTitle,
           noteText:item.noteText,
