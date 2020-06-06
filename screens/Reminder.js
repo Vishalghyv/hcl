@@ -4,16 +4,89 @@ import {  Button, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpac
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 export default class ReminderScreen extends Component {
   constructor(props) {
     super(props);
-    this.state= {fill: 55};
+    this.state = {fill: 50,timeHeading:'Time',time:new Date(0,0,0,0,0).getTime(),show:false,hour:0,minutes:0};
+    console.log(this.state.time);
+    this.timer = 0;
+    this.time = 0;
+    this.newTime = 0;
+    this.updateTime = this.updateTime.bind(this);
+    this.startTimer = this.startTimer.bind(this);
+    this.stopTimer = this.stopTimer.bind(this);
+    this.countDown = this.countDown.bind(this);
     console.log("Reminder");
   }
+
+  updateTime(event, time) {
+    console.log(time.getTime());
+    this.stopTimer();
+    this.setState({time:time.getTime()});
+    this.setState({hours:time.getHours()});
+    this.setState({minutes:time.getMinutes()});
+    this.setState({timeHeading:''+this.state.hours+'h-'+this.state.minutes+'m'});
+    this.setState({show:false});
+    this.setState({fill:100});
+  };
+
+  startTimer() {
+    console.log("dsf");
+    this.timer = setInterval(this.countDown, 1000);
+    this.setState({timer:this.timer});
+  }
+
+  countDown() {
+    if(this.state.hours > 0) {
+      if(this.state.minutes > 0) {
+        this.time = new Date(this.state.time).getHours()*60 + new Date(this.state.time).getMinutes();
+        this.newTime = this.state.hours*60 + this.state.minutes;
+        this.setState({fill:Math.floor(100*(this.newTime/this.time))});
+        this.setState({minutes:this.state.minutes-1});
+        this.setState({timeHeading:''+this.state.hours+'h-'+this.state.minutes+'m'});
+      } else {
+        this.setState({minutes:60});
+        this.setState({hours:this.state.hours-1});
+        this.setState({timeHeading:''+this.state.hours+'h-'+this.state.minutes+'m'});
+      }
+    }
+    else {
+      if(this.state.minutes > 0) {
+        this.time = new Date(this.state.time).getHours()*60 + new Date(this.state.time).getMinutes();
+        this.newTime = this.state.hours*60 + this.state.minutes;
+        this.setState({fill:Math.floor(100*(this.newTime/this.time))});
+        this.setState({minutes:this.state.minutes-1});
+        this.setState({timeHeading:''+this.state.hours+'h-'+this.state.minutes+'m'});
+      } else {
+        this.time = new Date(this.state.time).getHours()*60 + new Date(this.state.time).getMinutes();
+        this.newTime = this.state.hours*60 + this.state.minutes;
+        this.setState({fill:Math.floor(100*(this.newTime/this.time))});
+        clearInterval(this.state.timer);
+      }
+    }
+  }
+
+  stopTimer() {
+    console.log(this.state);
+    clearInterval(this.state.timer);
+  }
+  chooseTime() {
+
+    if(this.state.show){
+      this.setState({show:false});
+    return <DateTimePicker
+            testID="dateTimePicker"
+            value={this.state.time}
+            mode={'time'}
+            display="spinner"
+            onChange={this.updateTime}
+          />;
+        }
+  }
   render(){
-    const percentage = 66;
     return (
       <View style={styles.container}>
         <View style={styles.center}>
@@ -23,19 +96,32 @@ export default class ReminderScreen extends Component {
             fill={this.state.fill}
             tintColor="#00e0ff"
             rotation = {0}
-            arcSweepAngle = {250}
-            backgroundColor="#3d5875">
-            {
+            arcSweepAngle = {360}
+            backgroundColor="#3d5875"
+            >
+            { 
               (fill) => (
-                <TextInput
-                  placeholder="Time"
-                  style={{ height: 200, padding: 10, backgroundColor: 'white' }}
-                  value={this.state.fill}
-                  onChangeText={(fill) => this.setState(fill)}
-                />
+                <View>
+                  <Button onPress={() => this.setState({show:true})} title={this.state.timeHeading} />
+                  {this.chooseTime()}
+                </View>
               )
             }
           </AnimatedCircularProgress>
+          <View>
+            <Button
+                  title="Start"
+                  color="#841584"
+                  accessibilityLabel="Start the timer"
+                  onPress = {() => this.startTimer()}
+                />
+            <Button
+                  title="Stop"
+                  color="#841584"
+                  accessibilityLabel="Stop the timer"
+                  onPress = {() => this.stopTimer()}
+                />
+          </View>
         </View>
       </View>
     );
