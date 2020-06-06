@@ -2,17 +2,23 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useState, Component} from 'react';
 import { AsyncStorage, Button, Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 export default class CreateNoteScreen extends Component {
   constructor(props) {
     super(props);
-    this.state = {note:props.route.params.note};
+    this.state = {note:props.route.params.note,
+                  show:false,
+                  };
+    console.log(this.state.note);
     this.updateNote = this.updateNote.bind(this);
     this.storeData = this.storeData.bind(this);
-    console.log(props);
+    this.onChangeDate = this.onChangeDate.bind(this);
+    // console.log(props);
   }
   async storeData (note) {
+    console.log(note);
         try {
             this.props.route.params.onChangeNote(note);
         } catch (error) {
@@ -23,9 +29,16 @@ export default class CreateNoteScreen extends Component {
     }
   updateNote(title, body) {
     var note = Object.assign(this.state.note, {noteTitle:title,
-    noteText:body});
+    noteText:body, date: this.state.note.date});
     this.setState(note);
   }
+
+  onChangeDate(event, selectedDate) {
+    this.setState({show:false});
+    var note = Object.assign(this.state.note, {noteTitle:this.state.note.noteTitle,
+    noteText:this.state.note.noteText, date: selectedDate});
+    this.setState(note);
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -43,12 +56,21 @@ export default class CreateNoteScreen extends Component {
             value={this.state.note.noteText}
             onChangeText={(noteText) => this.updateNote(this.state.note.noteTitle, noteText)}
           />
-            <Button
-              title="Save Note"
-              color="#841584"
-              accessibilityLabel="Save Note"
-              onPress={() => this.storeData(this.state.note)}
-            />
+          <Button onPress={() => this.setState({show:true})} title="Choose a Due to date" />
+          {this.state.show && (<DateTimePicker
+            testID="dateTimePicker"
+            value={this.state.note.date}
+            mode={'date'}
+            is24Hour={true}
+            display="default"
+            onChange={this.onChangeDate}
+          />)}
+          <Button
+            title="Save Note"
+            color="#841584"
+            accessibilityLabel="Save Note"
+            onPress={() => this.storeData(this.state.note)}
+          />
       </View>
     );
   }

@@ -51,6 +51,7 @@ export default class NoteScreen extends Component {
   }
 
   Item( item, onPress ) {
+      var d = new Date(item.date);
       return (
         <TouchableHighlight 
           onPress={onPress}
@@ -58,6 +59,7 @@ export default class NoteScreen extends Component {
           <View style={styles.item}>
               <Text style={styles.title}>{item.noteTitle}</Text>
               <Text> {item.noteText} </Text>
+              <Text> {'Due Date:'+d.toDateString()} </Text>
               <Button
                 title="Delete Note"
                 color="#841584"
@@ -113,6 +115,7 @@ export default class NoteScreen extends Component {
           noteTitle:'',
           noteText:'',
           id: new Date().getTime(),
+          date: new Date(),
         },})} style={styles.newNote}>
           <Text style={styles.addNewNote}>+</Text>
         </TouchableOpacity>
