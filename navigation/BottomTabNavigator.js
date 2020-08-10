@@ -8,6 +8,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NoteScreen from '../screens/Note';
 import ReminderScreen from '../screens/Reminder';
+import CreateNoteScreen from '../screens/CreateNote';
 
 const BottomTab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -18,6 +19,7 @@ function TabAScreen() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="TabA Home" component={TabADetailsScreen} />
+      <Stack.Screen name="CreateNote" component={CreateNoteScreen} />
       <Stack.Screen name="TabA Details" component={Details} />
     </Stack.Navigator>
   );
@@ -37,14 +39,14 @@ function TabADetailsScreen({navigation}) {
         name="Notes"
         component={NoteScreen}
         options={{
-          title: 'Notes',
+          title: 'Products',
         }}
       />
       <Tab.Screen
         name="Reminder"
         component={ReminderScreen}
         options={{
-          title: 'Reminder',
+          title: 'Settings',
         }}
       />
     </Tab.Navigator>
@@ -67,8 +69,9 @@ export default function BottomTabNavigator({ navigation, route }) {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen name="TabA Home" component={TabADetailsScreen} />
+      <Stack.Screen name="Home" component={TabADetailsScreen} />
       <Stack.Screen name="TabA Details" component={Details} />
+      <Stack.Screen name="CreateNote" component={CreateNoteScreen} />
     </Stack.Navigator>
   );
 }
@@ -83,5 +86,8 @@ function getHeaderTitle(route) {
       return 'Notes';
     case 'Reminder':
       return 'Reminder';
+    case 'CreateNote':
+      return 'CreateNote';
   }
 }
+
