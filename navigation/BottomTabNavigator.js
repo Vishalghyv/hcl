@@ -3,16 +3,16 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import * as React from 'react';
 import { createStackNavigator} from '@react-navigation/stack';
 import { Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+import '../global.js';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NoteScreen from '../screens/Note';
 import ReminderScreen from '../screens/Reminder';
 import UserLoginScreen from '../screens/UserLogin';
 import CreateNoteScreen from '../screens/CreateNote';
+import { NavigationContainer } from '@react-navigation/native';
 
-import { createDrawerNavigator } from '@react-navigation/drawer';
-
+import { createDrawerNavigator, DrawerContentScrollView,  DrawerItemList } from '@react-navigation/drawer';
 const Drawer = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -65,17 +65,28 @@ function Details() {
     </View>
   );
 }
+
+
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
   // currently active tab. Learn more in the documentation:
   // https://reactnavigation.org/docs/en/screen-options-resolution.html
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
+  let name = '';
+  let screeName = "User Login";
+
+  if(global.userName != '') {
+    name = global.userName;
+    screeName = 'Account';
+  }
+
   return (
-     <Drawer.Navigator initialRouteName={'Home'}>        
+     <Drawer.Navigator initialRouteName={'Home'} >        
       <Drawer.Screen name="Home" component={TabADetailsScreen} />
-      <Drawer.Screen name="User Login" component={UserLoginScreen} />
+      <Drawer.Screen name={screeName} component={UserLoginScreen} />
     </Drawer.Navigator>
+   
   );
 }
 

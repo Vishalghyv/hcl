@@ -12,7 +12,6 @@ export default class NoteScreen extends Component {
     super(props);
     this.state = {
                 Notes:[
-                    
                   { date: "2020-08-20T16:56:02.688Z",
                     id: 1596387362688,
                     productName: "Nuts",
@@ -22,8 +21,7 @@ export default class NoteScreen extends Component {
                     address: "Nearest store",
                     store: "Your store",
                   },
-                  {
-                    date: "2020-08-14T16:55:06.574Z",
+                  { date: "2020-08-14T16:55:06.574Z",
                     id: 1596387306574,
                     productName: "Detergent",
                     imageDetail: "Detergent",
