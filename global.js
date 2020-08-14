@@ -1,0 +1,2 @@
+global.userName = '';
+global.userPassword = '';

@@ -1,93 +1,145 @@
 import * as WebBrowser from 'expo-web-browser';
-import * as React from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState, Component} from 'react';
+import { AsyncStorage, Button, FlatList, Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import '../global.js';
 import { MonoText } from '../components/StyledText';
+import NoteScreen from './Note';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
-        </View>
+const Drawer = createDrawerNavigator();
+console.disableYellowBox = true;
 
-        <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
 
-          <Text style={styles.getStartedText}>Open up the code for this screen:</Text>
+const numColumns = 3;
+var Clicked = [];
+var filterProducts = [];
 
-          <View style={[styles.codeHighlightContainer, styles.homeScreenFilename]}>
-            <MonoText>screens/HomeScreen.js</MonoText>
-          </View>
 
-          <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload.
-          </Text>
-        </View>
+export default class HomeScreen extends Component {
+  constructor(props) {
+    console.log(global.userName);
+    super(props);
+    this.state = { numColumns: 3};
+    this.state.Products = [
+      {key:'Nuts'},
+      {key:'Almond'},
+      {key:'Small Products'},
+      {key:'Detergent'},
+      {key:'Surf Excel'},
+      {key:'Other Products'},
+      {key:'More Other Products'},
+      {key:'Products'},
+      {key:'Random'},
+      {key:'Other'},
+    ];
+    this.SearchItem = this.SearchItem.bind(this);
+    this.searchProduct = this.searchProduct.bind(this);
+    this.SearchBar = this.SearchBar.bind(this);
+    this.changeBackground = this.changeBackground.bind(this);
+    this.CategoryOption = this.CategoryOption.bind(this);
+    this.Options = this.Options.bind(this);
+    this.state.Clicked = [];
+    this.state.filterProducts = [];
 
-        <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-            <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <View style={styles.tabBarInfoContainer}>
-        <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
-
-        <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-          <MonoText style={styles.codeHighlightText}>navigation/BottomTabNavigator.js</MonoText>
-        </View>
+  }
+  SearchItem(item) {
+    return (
+      <View style={styles.options}>
+        <Text style={styles.optionItem}>{item.item}</Text>
       </View>
-    </View>
-  );
-}
-
-HomeScreen.navigationOptions = {
-  header: null,
-  headerShown: false
-};
-
-function DevelopmentModeNotice() {
-  if (__DEV__) {
-    const learnMoreButton = (
-      <Text onPress={handleLearnMorePress} style={styles.helpLinkText}>
-        Learn more
-      </Text>
-    );
-
-    return (
-      <Text style={styles.developmentModeText}>
-        Development mode is enabled: your app will be slower but you can use useful development
-        tools. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
-      </Text>
     );
   }
-}
 
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync('https://docs.expo.io/versions/latest/workflow/development-mode/');
-}
+  searchProduct(value) {
+    filterProducts = Products.filter(
+    name => {
+      let productLowercase = name.key.toLowerCase();
 
-function handleHelpPress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
-  );
+      let searchProduct = value.toLowerCase();
+
+      return productLowercase.indexOf(searchProduct) > -1;
+    }
+    );
+  }
+
+  SearchBar() {
+    return (
+      <View style={styles.searchBar}>
+        <View style={styles.bar}>
+          <TextInput
+            placeholder="Search with Product"
+            style={{ fontSize: 18, width: '100%', height: 50, padding: 10, backgroundColor: 'white' }}
+            onChangeText = {(value) => searchProduct(value)}
+          />
+        </View>
+        <View style={styles.search}>
+          <TouchableOpacity
+            onPress={() => alert('Hello, world!')}
+            style={{ backgroundColor: '#5c5c8a' }}>
+              <Text 
+                style={{ fontSize: 20, color: '#c1c1d7' , padding: 5, textAlign: 'center'}}
+              >Search</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  changeBackground(item) {
+      const index = this.state.Clicked.indexOf(item.item);
+      if (index > -1) {
+        let items = this.state.Clicked;
+        items.splice(index, 1);
+        this.setState({Clicked:items});
+      } else {
+        this.setState({Clicked: [...this.state.Clicked, item.item]});
+      }
+  }
+
+  CategoryOption(item) {
+    var style = styles.optionItem
+    if(this.state.Clicked.indexOf(item.item)> -1) {
+      style = styles.optionSelectedItem
+    }
+    return (
+      <View style={styles.options}>
+        <TouchableOpacity
+            onPress={() => this.changeBackground(item)}>
+          <Text style={style}>{item.item}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  Options() {
+    return (
+      <View style={styles.category}>
+        <Text style={styles.categoryTitle}>Search With Category</Text>
+        <FlatList
+          data={this.state.Products}
+          contentContainerStyle={styles.optionContainer}
+          renderItem={({ item }) => <this.CategoryOption item={item.key} />}
+        />
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('Notes', {searchQuery: this.state.Clicked})}
+          style={{ backgroundColor: '#5c5c8a' }}>
+            <Text 
+              style={{ fontSize: 20, color: '#c1c1d7' , padding: 5, textAlign: 'center'}}
+            >Apply</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  render (){
+      return (
+      <View style={styles.container}>
+        <this.SearchBar />
+        <this.Options />
+      </View>
+      );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -95,6 +147,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  category: {
+    flex: 1,
+    backgroundColor: '#fff',
+    margin: 10,
+  },
+  categoryTitle: {
+    marginVertical: 10,
+    color: '#404040',
+    fontSize: 25,
+    letterSpacing: 2,
+    fontWeight: 'bold',
+  },
+  optionContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  options: {
+    marginVertical: 13,
+    marginHorizontal: 5,
+  },
+  searchBar: {
+    marginVertical: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+  },
+  optionItem: {
+    paddingVertical: 5,
+    paddingHorizontal:10,
+    borderColor: '#4d94ff',
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: '#b3d1ff',
+    color: '#4d94ff',
+    fontSize: 16,
+  },
+  optionSelectedItem: {
+    paddingVertical: 5,
+    paddingHorizontal:10,
+    borderColor: '#4d94ff',
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: '#4d94ff',
+    color: '#b3d1ff',
+    fontSize: 16,
+  },
+  bar: {
+    width: '75%',
+    backgroundColor: '#c2c2d6',
+    padding: 5,
+    fontSize: 10,
+  },
+  search: {
+    width: '25%',
+    backgroundColor: '#5c5c8a',
+    paddingVertical: 10,
+    fontSize: 10,
+  },
+
   developmentModeText: {
     marginBottom: 20,
     color: 'rgba(0,0,0,0.4)',
