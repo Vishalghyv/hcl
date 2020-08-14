@@ -8,6 +8,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NoteScreen from '../screens/Note';
 import ReminderScreen from '../screens/Reminder';
+import StoreScreen from '../screens/Store';
 import UserLoginScreen from '../screens/UserLogin';
 import CreateNoteScreen from '../screens/CreateNote';
 import { NavigationContainer } from '@react-navigation/native';
@@ -35,7 +36,7 @@ function TabADetailsScreen({navigation}) {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Home',
+          title: 'Search',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
         }}
       />
@@ -47,10 +48,10 @@ function TabADetailsScreen({navigation}) {
         }}
       />
       <Tab.Screen
-        name="Reminder"
-        component={ReminderScreen}
+        name="Store"
+        component={StoreScreen}
         options={{
-          title: 'Settings',
+          title: 'Stores',
         }}
       />
     </Tab.Navigator>
@@ -85,6 +86,7 @@ export default function BottomTabNavigator({ navigation, route }) {
      <Drawer.Navigator initialRouteName={'Home'} >        
       <Drawer.Screen name="Home" component={TabADetailsScreen} />
       <Drawer.Screen name={screeName} component={UserLoginScreen} />
+      <Drawer.Screen name={'Settings'} component={Details} />
     </Drawer.Navigator>
    
   );

@@ -14,20 +14,29 @@ export default class NoteScreen extends Component {
                 Notes:[
                   { date: "2020-08-20T16:56:02.688Z",
                     id: 1596387362688,
-                    productName: "Nuts",
-                    imageDetail: "Nuts",
+                    productName: "Walmart",
+                    imageDetail: "Walmart",
                     price: 70,
                     currency: "USD",
-                    address: "Nearest store",
+                    address: "Grocery Store",
                     store: "Your store",
                   },
                   { date: "2020-08-14T16:55:06.574Z",
                     id: 1596387306574,
-                    productName: "Detergent",
-                    imageDetail: "Detergent",
+                    productName: "Reliance Mart",
+                    imageDetail: "Reliance Mart",
                     price: 70,
                     currency: "USD",
-                    address: "Nearest store",
+                    address: "E-Commerce",
+                    store: "Your store",
+                  },
+                  { date: "2020-09-14T16:55:06.574Z",
+                    id: 1596387306374,
+                    productName: "Best Buy",
+                    imageDetail: "Best Buy",
+                    price: 70,
+                    currency: "USD",
+                    address: "E-Commerce",
                     store: "Your store",
                   }
                 ]
@@ -81,34 +90,72 @@ export default class NoteScreen extends Component {
     this.setState({buyProduct:true});
   }
 
-  Item( item, onPress ) {
-      var d = new Date(item.date);
+  OddItem (item, onPress) {
+    var d = new Date(item.date);
       var name = "Nuts";
       var icon;
       switch (item.imageDetail) {
-        case "Nuts": icon = require('../assets/images/Nuts.jpg'); break;
-        case "Detergent": icon = require('../assets/images/Detergent.jpg');
+        case "Walmart": icon = require('../assets/images/wallmart.jpg'); break;
+        case "Reliance Mart": icon = require('../assets/images/reliance.jpg'); break;
+        case "Best Buy": icon = require('../assets/images/best_buy.jpg');
       }
       return (
         <TouchableHighlight 
           onPress={onPress}
         >
-          <View style={styles.item}>
+          <View style={styles.itemRight}>
               <View style={styles.productImage}>
-                <Image source={icon} style={{ width: '100%', height: '100%' }} /> 
+                <Image source={icon} style={{ width: '100%', height: '100%' }} resizeMode={'contain'} /> 
               </View>
               <View style={styles.productDetails}>
                 <Text style={styles.productName}> {item.productName} </Text>
 
-                <Text style={styles.productPrice}> Price: {item.price} {item.currency} </Text>
-                <Text style={styles.productPrice}> Store Name: {item.address} </Text>
+                <Text style={styles.productPrice}> {item.address} </Text>
                 <TouchableOpacity style={styles.buyProduct} onPress = {() => this.buyProduct(item)}>
-                  <Text style = {{color: 'white', fontSize: 17, fontWeight: 'bold'}}> Buy Product </Text>
+                  <Text style={{color: 'white', fontWeight: 'bold', fontSize: 14}}> Show Products </Text>
                 </TouchableOpacity>
               </View>
           </View>
         </TouchableHighlight>
       );
+  }
+  EvenItem (item, onPress) {
+      var d = new Date(item.date);
+      var name = "Nuts";
+      var icon;
+      switch (item.imageDetail) {
+        case "Walmart": icon = require('../assets/images/wallmart.jpg'); break;
+        case "Reliance Mart": icon = require('../assets/images/reliance.jpg'); break;
+        case "Best Buy": icon = require('../assets/images/best_buy.jpg');
+      }
+      return (
+        <TouchableHighlight 
+          onPress={onPress}
+        >
+          <View style={styles.itemLeft}>
+              <View style={styles.productDetails}>
+                <Text style={styles.productName}> {item.productName} </Text>
+                <Text style={styles.productPrice}> {item.address} </Text>
+                <TouchableOpacity style={styles.buyProduct} onPress = {() => this.buyProduct(item)}>
+                  <Text style={{color: 'white', fontWeight: 'bold', fontSize: 14}}> Show Products </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.productImage}>
+                <Image source={icon} style={{ width: '100%', height: '100%' }} resizeMode={'contain'}  /> 
+              </View>
+          </View>
+        </TouchableHighlight>
+      );
+  }
+
+  Item( item, index, onPress ) {
+      console.log(index);
+      if (index % 2 === 0) {
+        return this.OddItem(item, onPress);
+      } else {
+        return this.EvenItem(item, onPress);
+      }
+      
   };
 
   Create(length) {
@@ -135,9 +182,6 @@ export default class NoteScreen extends Component {
   }
   cancel() {
     this.setState({buyProduct:false});
-  }
-  cancelFilters() {
-    this.setState({filter:false});
   }
 
 
@@ -177,8 +221,8 @@ export default class NoteScreen extends Component {
                     <Text>+</Text>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.buyProduct} onPress = {() => this.buyProduct(item)}>
-                  <Text> Buy Product </Text>
+                <TouchableOpacity  onPress = {() => this.buyProduct(item)}>
+                  <Text style={styles.buyProduct}> Buy Product </Text>
                 </TouchableOpacity>
               </View>
           </View>
@@ -186,36 +230,7 @@ export default class NoteScreen extends Component {
         </View>
       );  
   }
-  Filter() {
-    return (
-        <View style={styles.coverFull}>
-          <TouchableWithoutFeedback 
-            onPress={ () => this.cancelFilters()}
-          >
-          <View style={styles.coverFull}></View>
-          </TouchableWithoutFeedback>
-          <View style={styles.buyFilters}>
-            <Text style={styles.filterHeader}>Filters</Text>
-            <View style={styles.filterRow}>
-              <Text>Newest Arrivals</Text>
-            </View>
-            <View style={styles.filterRow}>
-              <Text>Price: Low to High</Text>
-            </View>
-            <View style={styles.filterRow}>
-              <Text>Price: High to Low</Text>
-            </View>
-          </View>
-        </View>
-      );  
-  }
-  addFilter() {
-    if(this.state.filter) {
-      this.setState({filter: false});
-    } else {
-      this.setState({filter: true});
-    }
-  }
+  
   render(){
     this.retrieveData();
     if('route' in this.props) {
@@ -260,17 +275,12 @@ export default class NoteScreen extends Component {
     } else {
       buyingMenu = null;
     }
-    if(this.state.filter) {
-      filter = this.Filter()
-    } else {
-      filter = null;
-    }
     return (
       <View style={styles.container}>
         <FlatList
           data={Object.values(this.state.Notes).reverse()}
           initialScrollIndex = {0}
-          renderItem={({ item }) => this.Item(item,() => this.props.navigation.navigate('CreateNote',{onChangeNote:(note) => {console.log("note changed",note);},note:{
+          renderItem={({ item, index}) => this.Item(item, index, () => this.props.navigation.navigate('CreateNote',{onChangeNote:(note) => {console.log("note changed",note);},note:{
           imageDetail:item.imageDetail,
           productName:item.productName,
           id: item.id,
@@ -278,11 +288,7 @@ export default class NoteScreen extends Component {
           keyExtractor={item => item.id}
         />
         {button}
-        <TouchableOpacity onPress={ () => this.addFilter()} style={styles.newNote}>
-          <Text style={styles.addNewNote}>Filter</Text>
-        </TouchableOpacity>
         {buyingMenu}
-        {filter}
       </View>
     );
   } 
@@ -349,22 +355,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    height: '100%',
   },
-  item: {
+  itemRight: {
     backgroundColor: 'white',
-    padding:10,
-    marginVertical: 10,
+    padding: 20,
+    margin: 10,
+    marginBottom: 5,
+    marginRight: '7%',
     display: 'flex',
     flexDirection: 'row',
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: 'lightblue',
-    elevation: 5,
-    width: '100%',
-    height: 200,
+    borderLeftWidth: 8,
+    borderColor: '#737373',
+    height: 150,
+    elevation: 10,
+  },
+  itemLeft: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 10,
+    marginBottom: 10,
+    marginLeft: '7%',
+    display: 'flex',
+    flexDirection: 'row',
+    borderRightWidth: 8,
+    borderColor: '#737373',
+    height: 150,
+    elevation: 10,
   },
   buyingItem: {
-    backgroundColor: 'lightblue',
+    backgroundColor: 'lightgrey',
     padding: 20,
     display: 'flex',
     flexDirection: 'row',
@@ -375,8 +395,8 @@ const styles = StyleSheet.create({
   productImage: {
     justifyContent:'center',
     alignItems: 'center',
-    width: '35%',
-    height: '100%',
+    width: '55%',
+    height: '95%',
   },
   productDetails: {
     padding: 10,
@@ -384,22 +404,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     display:'flex',
     flexDirection:'column',
+    width: '45%',
   },
   buyProduct: {
     width: '100%',
     color: 'white',
-    backgroundColor: '#66a3ff',
-    padding: 15,
-    paddingVertical: 10,
-    marginVertical: 8,
+    backgroundColor: '#ff9999',
+    padding: 2,
+    paddingVertical: 4,
+    marginTop: 8,
     textAlign: 'center',
     alignItems: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    elevation: 3,
   },
   productName: {
     fontSize:24,
   },
   productPrice: {
-    color: 'grey',
+    color: 'brown',
   },
   title: {
     fontSize: 32,
@@ -517,17 +541,15 @@ const styles = StyleSheet.create({
     zIndex: 11,
     right:20,
     top:20,
-    backgroundColor:'#b3d9ff',
+    backgroundColor:'lightblue',
     padding: 5,
     borderRadius:5,
-    borderTopRightRadius: 0,
     alignItems:'center',
     justifyContent:'center',
     elevation:8,
   },
   addNewNote: {
-    color:'black',
+    color:'grey',
     fontSize: 18,
-    paddingHorizontal: 10,
   }
 });
