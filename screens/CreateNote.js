@@ -28,15 +28,15 @@ export default class CreateNoteScreen extends Component {
 
     }
   updateNote(title, body) {
-    var note = Object.assign(this.state.note, {noteTitle:title,
-    noteText:body, date: this.state.note.date});
+    var note = Object.assign(this.state.note, {imageDetail:title,
+    productName:body, date: this.state.note.date});
     this.setState(note);
   }
 
   onChangeDate(event, selectedDate) {
     this.setState({show:false});
-    var note = Object.assign(this.state.note, {noteTitle:this.state.note.noteTitle,
-    noteText:this.state.note.noteText, date: selectedDate});
+    var note = Object.assign(this.state.note, {imageDetail:this.state.note.imageDetail,
+    productName:this.state.note.productName, date: selectedDate});
     this.setState(note);
   };
   render() {
@@ -46,15 +46,15 @@ export default class CreateNoteScreen extends Component {
             autoFocus
             placeholder="Title"
             style={{ height: 50, padding: 10, marginBottom: 2, backgroundColor: 'white' }}
-            value={this.state.note.noteTitle}
-            onChangeText={(noteTitle) => this.updateNote(noteTitle, this.state.note.noteText)}
+            value={this.state.note.imageDetail}
+            onChangeText={(imageDetail) => this.updateNote(imageDetail, this.state.note.productName)}
           />
           <TextInput
             multiline
             placeholder="What's on your mind?"
             style={{ height: 200, padding: 10, backgroundColor: 'white' }}
-            value={this.state.note.noteText}
-            onChangeText={(noteText) => this.updateNote(this.state.note.noteTitle, noteText)}
+            value={this.state.note.productName}
+            onChangeText={(productName) => this.updateNote(this.state.note.imageDetail, productName)}
           />
           <Button onPress={() => this.setState({show:true})} title="Choose a Due to date" />
           {this.state.show && (<DateTimePicker

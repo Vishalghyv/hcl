@@ -7,6 +7,7 @@ import useCachedResources from './hooks/useCachedResources';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import CreateNotesScreen from './screens/CreateNote';
 import NoteScreen from './screens/Note';
+import UserLoginScreen from './screens/UserLogin';
 import LinkingConfiguration from './navigation/LinkingConfiguration';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -16,7 +17,10 @@ const Stack = createStackNavigator();
 
 export default function App(props) {
   const isLoadingComplete = useCachedResources();
+  let userName = '';
+  let userPassword = '';
 
+  console.log(userName);
   if (!isLoadingComplete) {
     return null;
   } else {
@@ -24,13 +28,9 @@ export default function App(props) {
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
         <NavigationContainer linking={LinkingConfiguration}>
-          
-          <Drawer.Navigator>
-          	<Drawer.Screen name="Root" component={BottomTabNavigator} />
-          	<Drawer.Screen name="Clean" component={BottomTabNavigator} />
-          	<Drawer.Screen name="sdf" component={BottomTabNavigator} />
-          	<Drawer.Screen name="sdffdsdf" component={BottomTabNavigator} />
-      	  </Drawer.Navigator>
+          <Stack.Navigator initialRouteName={'Grocery Store'}>
+            <Stack.Screen name="Grocery Store" component={BottomTabNavigator} />
+          </Stack.Navigator>
         </NavigationContainer>
       </View>
     );

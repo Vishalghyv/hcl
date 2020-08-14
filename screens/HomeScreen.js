@@ -2,7 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import React, { useState, Component} from 'react';
 import { AsyncStorage, Button, FlatList, Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import '../global.js';
 import { MonoText } from '../components/StyledText';
 import NoteScreen from './Note';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -18,6 +18,7 @@ var filterProducts = [];
 
 export default class HomeScreen extends Component {
   constructor(props) {
+    console.log(global.userName);
     super(props);
     this.state = { numColumns: 3};
     this.state.Products = [

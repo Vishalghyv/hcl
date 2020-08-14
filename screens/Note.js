@@ -13,17 +13,24 @@ export default class NoteScreen extends Component {
     this.state = {
                 Notes:[
                     
-                    { date: "2020-08-20T16:56:02.688Z",
+                  { date: "2020-08-20T16:56:02.688Z",
                     id: 1596387362688,
-                    noteText: "Nuts",
-                    noteTitle: "Nuts",
+                    productName: "Nuts",
+                    imageDetail: "Nuts",
+                    price: 70,
+                    currency: "USD",
+                    address: "Nearest store",
+                    store: "Your store",
                   },
                   {
-                     date: "2020-08-14T16:55:06.574Z",
-                     id: 1596387306574,
-                     noteText: "Detergent",
-                     noteTitle: "Detergent",
-
+                    date: "2020-08-14T16:55:06.574Z",
+                    id: 1596387306574,
+                    productName: "Detergent",
+                    imageDetail: "Detergent",
+                    price: 70,
+                    currency: "USD",
+                    address: "Nearest store",
+                    store: "Your store",
                   }
                 ]
               };
@@ -72,7 +79,6 @@ export default class NoteScreen extends Component {
   }
 
   async buyProduct(note) {
-    console.log('buying');
     this.setState({buyNote: note.id});
     this.setState({buyProduct:true});
   }
@@ -81,8 +87,7 @@ export default class NoteScreen extends Component {
       var d = new Date(item.date);
       var name = "Nuts";
       var icon;
-      console.log(item.noteTitle);
-      switch (item.noteTitle) {
+      switch (item.imageDetail) {
         case "Nuts": icon = require('../assets/images/Nuts.jpg'); break;
         case "Detergent": icon = require('../assets/images/Detergent.jpg');
       }
@@ -95,9 +100,10 @@ export default class NoteScreen extends Component {
                 <Image source={icon} style={{ width: '100%', height: '100%' }} /> 
               </View>
               <View style={styles.productDetails}>
-                <Text style={styles.productName}> {item.noteText} </Text>
+                <Text style={styles.productName}> {item.productName} </Text>
 
-                <Text style={styles.productPrice}> Price: {d.toDateString()} </Text>
+                <Text style={styles.productPrice}> Price: {item.price} {item.currency} </Text>
+                <Text style={styles.productPrice}> Store Name: {item.address} </Text>
                 <TouchableOpacity style={styles.buyProduct} onPress = {() => this.buyProduct(item)}>
                   <Text> Buy Product </Text>
                 </TouchableOpacity>
@@ -141,7 +147,7 @@ export default class NoteScreen extends Component {
     var item = this.state.Notes[this.state.buyNote];
     var d = new Date(item.date);
     var icon;
-    switch (item.noteTitle) {
+    switch (item.imageDetail) {
       case "Nuts": icon = require('../assets/images/Nuts.jpg'); break;
       case "Detergent": icon = require('../assets/images/Detergent.jpg');
     }
@@ -158,7 +164,7 @@ export default class NoteScreen extends Component {
                 <Image source={icon} style={{ width: '100%', height: '100%' }} /> 
               </View>
               <View style={styles.productDetails}>
-                <Text style={styles.productName}> {item.noteText} </Text>
+                <Text style={styles.productName}> {item.productName} </Text>
 
                 <Text style={styles.productPrice}> Price: {d.toDateString()} </Text>
                 <View style={styles.quantity}>
@@ -223,24 +229,22 @@ export default class NoteScreen extends Component {
         }
       }
     }
-    if(this.state.query.length > 0) {
-      let notes = Object.values(this.state.Notes).filter(
-        product => {
-          if(this.state.query.indexOf(product.noteText) > -1) {
-            return true;
+    if(this.state.hasOwnProperty('query')) {
+      if(this.state.query.length > 0) {
+        let notes = Object.values(this.state.Notes).filter(
+          product => {
+            if(this.state.query.indexOf(product.productName) > -1) {
+              return true;
+            }
+            return this.state.query.indexOf(product.imageDetail) > -1;
           }
-          return this.state.query.indexOf(product.noteTitle) > -1;
-        }
-      );
-      this.state.Notes = notes;
-    } else {
-      console.log("dsgfsdgadgsfgsdfg");
-      this.retrieveData();
+        );
+        this.state.Notes = notes;
+      } else {
+        this.retrieveData();
+      }
     }
-    console.log("dsgfsdgadgsfgsdfg");
-    console.log(this.state.query);
     let button, buyingMenu, filter;
-    console.log(Object.values(this.state.Notes).reverse());
     if (!Object.keys(this.state.Notes).length) {
         button = <View style={styles.container}>
           <Text  style={{ fontSize: 10, color:'lightgrey' }}>You Haven't Created any Notes</Text>
@@ -269,8 +273,8 @@ export default class NoteScreen extends Component {
           data={Object.values(this.state.Notes).reverse()}
           initialScrollIndex = {0}
           renderItem={({ item }) => this.Item(item,() => this.props.navigation.navigate('CreateNote',{onChangeNote:(note) => {console.log("note changed",note);},note:{
-          noteTitle:item.noteTitle,
-          noteText:item.noteText,
+          imageDetail:item.imageDetail,
+          productName:item.productName,
           id: item.id,
         }}))}
           keyExtractor={item => item.id}

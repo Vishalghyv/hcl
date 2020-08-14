@@ -8,8 +8,12 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NoteScreen from '../screens/Note';
 import ReminderScreen from '../screens/Reminder';
+import UserLoginScreen from '../screens/UserLogin';
 import CreateNoteScreen from '../screens/CreateNote';
 
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+const Drawer = createDrawerNavigator();
 const BottomTab = createBottomTabNavigator();
 const Tab = createMaterialTopTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -68,11 +72,10 @@ export default function BottomTabNavigator({ navigation, route }) {
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={TabADetailsScreen} />
-      <Stack.Screen name="TabA Details" component={Details} />
-      <Stack.Screen name="CreateNote" component={CreateNoteScreen} />
-    </Stack.Navigator>
+     <Drawer.Navigator initialRouteName={'Home'}>        
+      <Drawer.Screen name="Home" component={TabADetailsScreen} />
+      <Drawer.Screen name="User Login" component={UserLoginScreen} />
+    </Drawer.Navigator>
   );
 }
 
